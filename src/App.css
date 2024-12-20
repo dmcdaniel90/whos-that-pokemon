@@ -1,0 +1,18 @@
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  filter: blur(10px);
+  transition: filter 0.5s;
+}
+
+.message {
+  color: #ff5733;
+}
