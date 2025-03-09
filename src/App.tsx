@@ -1,20 +1,19 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useFetchPokemon } from './hooks/useFetchPokemon';
 import { generateRandomId } from './utils/generateRandomID';
-import {
-  Box,
-  Button,
-  Container,
-  CssBaseline,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, CssBaseline, TextField } from '@mui/material';
+import Heading from './components/Heading';
+import PokemonImage from './components/PokemonImage';
+import UserMessage from './components/UserMessage';
+import GenerationSelector from './components/PokemonGenerationSelector';
 
 import './App.css';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { Generation } from './types/types';
+import usePokemonGeneration from './hooks/usePokemonGeneration';
 
 export default function App() {
   //   Get DOM elements
@@ -26,15 +25,17 @@ export default function App() {
     'guess'
   ) as HTMLInputElement;
 
-  const min = 1;
-  const max = 151;
+  const [gen, setGen] = useState<Generation>('I');
+  const { min, max } = usePokemonGeneration(gen);
   const initialId = generateRandomId(min, max);
-
   const [pokemonId, setPokemonId] = useState<number>(initialId);
+  const [userGuess, setUserGuess] = useState<string | null>(null);
   const [userMessage, setUserMessage] = useState<string>(
     'Who is this Pokemon?'
   );
-  const [userGuess, setUserGuess] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState<boolean>(false);
+
+  // TODO Create state to track whether the image should be shown
 
   // This value will change when the pokemonId changes
   const currentPokemon = useFetchPokemon(pokemonId);
@@ -44,11 +45,20 @@ export default function App() {
     setPokemonId(newId); // Trigger re-fetch by changing the ID
   }
 
-  function handleClick(e: React.MouseEvent): void {
-    e.preventDefault();
-
-    checkGuess();
+  function handleUpdateGeneration(generation: Generation): void {
+    setGen(generation);
   }
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    checkGuess();
+  }, []);
+
+  const handleShowHint = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowHint(true);
+  }, [])
+
 
   function handleKeyPress(e: React.KeyboardEvent): void {
     if (e.key === 'Enter') {
@@ -67,20 +77,14 @@ export default function App() {
       showImage();
       setUserMessage(
         'Correct! The Pokémon is ' +
-          currentPokemon?.name.charAt(0).toUpperCase() +
-          currentPokemon?.name.slice(1) +
-          '!'
+        currentPokemon?.name.charAt(0).toUpperCase() +
+        currentPokemon?.name.slice(1) +
+        '!'
       );
     } else {
-      setUserMessage('Incorrect!');
+      setUserMessage('Incorrect! It was ' + currentPokemon?.name);
     }
-
-    // Fetch a new Pokémon after 2 seconds
-    setTimeout(() => {
-      hideImage();
-      handleFetchNewPokemon();
-      clear();
-    }, 2000);
+    clear();
   }
   function hideImage(): void {
     pokemonImageElement.style.filter = 'blur(10px)';
@@ -90,16 +94,24 @@ export default function App() {
     pokemonImageElement.style.filter = 'blur(0px)';
   }
 
+  // TODO create a handleShowHint function that toggles the showHint state
+
   /**
    * Resets the user interface for a new Pokémon guess.
    * - Sets the user message to prompt a new guess.
    * - Clears the user's current guess input.
    */
 
-  function clear(): void {
-    setUserMessage('Who is this Pokemon?');
-    setUserGuess('');
-    guessInputElement.value = '';
+  async function clear(): Promise<void> {
+    // Fetch a new Pokémon after 2 seconds
+    setTimeout(() => {
+      hideImage();
+      handleFetchNewPokemon();
+      setUserMessage('Who is this Pokemon?');
+      setUserGuess('');
+      setShowHint(false);
+      guessInputElement.value = '';
+    }, 2000);
   }
 
   // Listen for Enter key press
@@ -112,15 +124,8 @@ export default function App() {
   return (
     <main id="main">
       <CssBaseline />
-      <Container maxWidth="lg" sx={{ border: '1px solid red' }}>
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h3" sx={{ mt: 2 }}>
-            Pokémon Guessing Game
-          </Typography>
-          <Typography variant="subtitle1">
-            Hint: {currentPokemon?.name}
-          </Typography>
-        </Box>
+      <Container maxWidth="lg" >
+        <Heading currentPokemon={currentPokemon} showHint={showHint} />
         <Box
           sx={{
             display: 'flex',
@@ -128,21 +133,7 @@ export default function App() {
             alignItems: 'top',
             mt: 2,
           }}>
-          <Box
-            sx={{
-              width: '50%',
-              border: '1px solid red',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <img
-              id="pokemonImage"
-              src={currentPokemon?.sprites.front_default}
-              alt="Pokemon"
-            />
-          </Box>
+          <PokemonImage currentPokemon={currentPokemon} />
           <Box
             sx={{
               width: '50%',
@@ -152,13 +143,7 @@ export default function App() {
               alignItems: 'center',
               justifyContent: 'space-evenly',
             }}>
-            <Typography
-              className="message"
-              id="message"
-              variant="h4"
-              sx={{ mx: 2 }}>
-              {userMessage}
-            </Typography>
+            <UserMessage message={userMessage} />
             <Box
               sx={{
                 width: '80%',
@@ -174,12 +159,24 @@ export default function App() {
                 label="Guess the Pokémon"
                 sx={{ width: '100%', mb: 4 }}
               />
-              <Button
-                variant="contained"
-                onClick={handleClick}
-                sx={{ width: '100%' }}>
-                Submit Guess
-              </Button>
+              <Container sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleClick}
+                  sx={{ width: '50%' }}>
+                  Submit Guess
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleShowHint}
+                  sx={{ width: '50%' }}>
+                  Need a Hint?
+                </Button>
+              </Container>
+              <GenerationSelector
+                handleUpdateGeneration={handleUpdateGeneration}
+                generation={gen}
+              />
             </Box>
           </Box>
         </Box>
