@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { Pokemon } from '../types/types';
+import { memo } from 'react';
 
-export default function Heading(props: { currentPokemon: Pokemon | null, showHint: boolean }) {
+function Heading(props: { currentPokemon: Pokemon | null, showHint: boolean }) {
   const { currentPokemon, showHint } = props;
 
   return (
@@ -16,3 +17,5 @@ export default function Heading(props: { currentPokemon: Pokemon | null, showHin
     </Box>
   );
 }
+
+export default memo(Heading);

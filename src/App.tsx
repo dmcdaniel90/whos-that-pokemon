@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useFetchPokemon } from './hooks/useFetchPokemon';
 import { generateRandomId } from './utils/generateRandomID';
 import { Box, Button, Container, CssBaseline, TextField } from '@mui/material';
@@ -6,26 +6,29 @@ import Heading from './components/Heading';
 import PokemonImage from './components/PokemonImage';
 import UserMessage from './components/UserMessage';
 import GenerationSelector from './components/PokemonGenerationSelector';
-
+import { Generation } from './types/types';
+import usePokemonGeneration from './hooks/usePokemonGeneration';
 import './App.css';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Generation } from './types/types';
-import usePokemonGeneration from './hooks/usePokemonGeneration';
 
-export default function App() {
+export function App() {
   //   Get DOM elements
   const pokemonImageElement = document.getElementById(
     'pokemonImage'
-  ) as HTMLImageElement;
-  //   const messageElement = document.getElementById('message') as HTMLDivElement;
+  ) as HTMLImageElement
+
   const guessInputElement = document.getElementById(
     'guess'
   ) as HTMLInputElement;
 
+  // State variables
   const [gen, setGen] = useState<Generation>('I');
+  /* Set the range of pokemon to fetch. Must be placed here because 
+  it depends on the generation and generateRandomId depends on the range
+  */
   const { min, max } = usePokemonGeneration(gen);
   const initialId = generateRandomId(min, max);
   const [pokemonId, setPokemonId] = useState<number>(initialId);
@@ -35,44 +38,74 @@ export default function App() {
   );
   const [showHint, setShowHint] = useState<boolean>(false);
 
-  // TODO Create state to track whether the image should be shown
+  // Timeout ID - used to clear the timeout
+  let timeoutId: number | null = null;
+
+  // Initial fetch onLoad
+  useLayoutEffect(() => {
+    handleFetchNewPokemon();
+  }, [])
 
   // This value will change when the pokemonId changes
   const currentPokemon = useFetchPokemon(pokemonId);
 
-  function handleFetchNewPokemon(): void {
+
+  const handleFetchNewPokemon = useCallback((): void => {
     const newId = generateRandomId(min, max); // Max range of pokemon to fetch starting at 1
     setPokemonId(newId); // Trigger re-fetch by changing the ID
-  }
+    console.log(`Fetching new pokemon with ID: ${newId}`);
+  }, [pokemonId, min, max])
 
-  function handleUpdateGeneration(generation: Generation): void {
+  const handleUpdateGeneration = useCallback((generation: Generation): void => {
     setGen(generation);
-  }
+  }, [gen])
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent): void => {
     e.preventDefault();
     checkGuess();
-  }, []);
+  };
 
-  const handleShowHint = useCallback((e: React.MouseEvent) => {
+  const handleShowHint = (e: React.MouseEvent): void => {
     e.preventDefault();
     setShowHint(true);
-  }, [])
-
-
-  function handleKeyPress(e: React.KeyboardEvent): void {
-    if (e.key === 'Enter') {
-      checkGuess();
-    }
   }
 
+  const hideImage = useCallback((): void => {
+    pokemonImageElement.style.filter = 'blur(10px)';
+  }, [pokemonImageElement]);
+
+  const showImage = useCallback((): void => {
+    pokemonImageElement.style.filter = 'blur(0px)';
+  }, [pokemonImageElement]);
+
   /**
-   * Compares the user's guess with the name of the current Pokémon.
-   * If correct, shows the Pokémon image and congratulates the user.
-   * If incorrect, displays an error message.
-   * Triggers a new Pokémon fetch after 2 seconds.
-   */
-  function checkGuess(): void {
+ * Resets the user interface for a new Pokémon guess.
+ * - Sets the user message to prompt a new guess.
+ * - Clears the user's current guess input.
+ */
+
+  const clear = useCallback(async () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    // Fetch a new Pokémon after 2 seconds
+    timeoutId = setTimeout(() => {
+      hideImage();
+      handleFetchNewPokemon();
+      setUserMessage('Who is this Pokemon?');
+      setUserGuess('');
+      setShowHint(false);
+      guessInputElement.value = '';
+    }, 2000) as unknown as number;
+  }, [hideImage, handleFetchNewPokemon, setUserMessage, setUserGuess, setShowHint]);
+
+  /**
+ * Compares the user's guess with the name of the current Pokémon.
+ * If correct, shows the Pokémon image and congratulates the user.
+ * If incorrect, displays an error message.
+ * Triggers a new Pokémon fetch after 2 seconds.
+ */
+  const checkGuess = useCallback((): void => {
     if (userGuess === currentPokemon?.name) {
       showImage();
       setUserMessage(
@@ -82,44 +115,11 @@ export default function App() {
         '!'
       );
     } else {
+      showImage();
       setUserMessage('Incorrect! It was ' + currentPokemon?.name);
     }
     clear();
-  }
-  function hideImage(): void {
-    pokemonImageElement.style.filter = 'blur(10px)';
-  }
-
-  function showImage(): void {
-    pokemonImageElement.style.filter = 'blur(0px)';
-  }
-
-  // TODO create a handleShowHint function that toggles the showHint state
-
-  /**
-   * Resets the user interface for a new Pokémon guess.
-   * - Sets the user message to prompt a new guess.
-   * - Clears the user's current guess input.
-   */
-
-  async function clear(): Promise<void> {
-    // Fetch a new Pokémon after 2 seconds
-    setTimeout(() => {
-      hideImage();
-      handleFetchNewPokemon();
-      setUserMessage('Who is this Pokemon?');
-      setUserGuess('');
-      setShowHint(false);
-      guessInputElement.value = '';
-    }, 2000);
-  }
-
-  // Listen for Enter key press
-  document.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
-      handleKeyPress(e as unknown as React.KeyboardEvent);
-    }
-  });
+  }, [userGuess, currentPokemon]);
 
   return (
     <main id="main">
@@ -184,3 +184,6 @@ export default function App() {
     </main>
   );
 }
+
+// App.whyDidYouRender = true;
+export default App;

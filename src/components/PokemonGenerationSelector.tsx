@@ -4,13 +4,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Generation } from '../types/types';
+import { memo } from 'react';
 
 interface GenerationSelectorProps {
   handleUpdateGeneration: (generation: Generation) => void;
   generation: Generation;
 }
 
-export default function GenerationSelector(props: GenerationSelectorProps) {
+function GenerationSelector(props: GenerationSelectorProps) {
   const { handleUpdateGeneration, generation } = props;
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -42,3 +43,5 @@ export default function GenerationSelector(props: GenerationSelectorProps) {
     </Box>
   );
 }
+
+export default memo(GenerationSelector);
