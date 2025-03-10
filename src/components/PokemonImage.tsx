@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
 import { Pokemon } from '../types/types';
+import { memo } from 'react';
 
-export default function PokemonImage(props: {
+function PokemonImage(props: {
   currentPokemon: Pokemon | null;
 }) {
   const { currentPokemon } = props;
@@ -23,3 +24,5 @@ export default function PokemonImage(props: {
     </Box>
   );
 }
+
+export default memo(PokemonImage);

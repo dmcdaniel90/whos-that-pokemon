@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
+import { memo } from 'react';
 
-export default function UserMessage(props: { message: string }) {
+function UserMessage(props: { message: string }) {
   const { message } = props;
   return (
     <Typography variant="h4" sx={{ mt: 2 }}>
@@ -8,3 +9,5 @@ export default function UserMessage(props: { message: string }) {
     </Typography>
   );
 }
+
+export default memo(UserMessage);
