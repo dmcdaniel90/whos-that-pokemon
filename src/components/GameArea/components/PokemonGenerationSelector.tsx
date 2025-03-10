@@ -3,7 +3,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Generation } from '../types/types';
+import { Generation } from '../../../types/types';
 import { memo } from 'react';
 
 interface GenerationSelectorProps {
@@ -21,7 +21,7 @@ function GenerationSelector(props: GenerationSelectorProps) {
   return (
     <Box sx={{ minWidth: 200, mt: 4 }}>
       <FormControl fullWidth>
-        <InputLabel id="generationSelectorLabel">
+        <InputLabel id="generationSelectorLabel" sx={{ color: 'white', '&.Mui-focused': { color: 'white' }, '&.Mui-hover': { border: '1px solid white' } }}>
           Select Pokemon Generation
         </InputLabel>
         <Select

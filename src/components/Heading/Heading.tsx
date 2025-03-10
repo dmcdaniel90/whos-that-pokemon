@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { Pokemon } from '../types/types';
+import { Pokemon } from '../../types/types';
 import { memo } from 'react';
 
 function Heading(props: { currentPokemon: Pokemon | null, showHint: boolean }) {

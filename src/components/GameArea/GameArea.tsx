@@ -1,10 +1,11 @@
 import { Box, Button, Container, TextField } from "@mui/material";
-import PokemonImage from "../components/PokemonImage";
-import UserMessage from "../components/UserMessage";
+import PokemonImage from "./components/PokemonImage";
+import UserMessage from "./components/UserMessage";
 import { useState, useLayoutEffect, useCallback } from "react";
-import { Generation, Pokemon } from "../types/types";
-import { generateRandomId } from "../utils/generateRandomID";
-import GenerationSelector from "../components/PokemonGenerationSelector";
+import { Generation, Pokemon } from "../../types/types";
+import { generateRandomId } from "../../utils/generateRandomID";
+import GenerationSelector from "./components/PokemonGenerationSelector";
+import { textFieldStyles } from "./styles/textFieldStyles";
 
 interface IGameAreaProps {
     setShowHint: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,10 +29,13 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
         'guess'
     ) as HTMLInputElement;
 
+    // Default messages
+    const defaultUserMessage = 'Who is that Pokemon?';
+
     // State variables
     const [userGuess, setUserGuess] = useState<string | null>(null);
     const [userMessage, setUserMessage] = useState<string>(
-        'Who is this Pokemon?'
+        defaultUserMessage
     );
 
     // Timeout ID - used to clear the timeout
@@ -79,7 +83,7 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
         timeoutId = setTimeout(() => {
             hideImage();
             handleFetchNewPokemon();
-            setUserMessage('Who is this Pokemon?');
+            setUserMessage(defaultUserMessage);
             setUserGuess('');
             setShowHint(false);
             guessInputElement.value = '';
@@ -140,7 +144,8 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                         onChange={(e) => setUserGuess(e.target.value.toLowerCase())}
                         variant="filled"
                         label="Guess the Pokémon"
-                        sx={{ width: '100%', mb: 4 }}
+                        sx={{ width: '100%', mb: 4, ...textFieldStyles }}
+                        required
                     />
                     <Container sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2 }}>
                         <Button

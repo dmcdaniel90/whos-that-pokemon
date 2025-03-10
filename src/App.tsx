@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useFetchPokemon } from './hooks/useFetchPokemon';
 import { generateRandomId } from './utils/generateRandomID';
 import { Container, CssBaseline } from '@mui/material';
-import Heading from './components/Heading';
+import Heading from './components/Heading/Heading';
 import { Generation, Pokemon } from './types/types';
 import usePokemonGeneration from './hooks/usePokemonGeneration';
 import './App.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/700.css';
 import "@fontsource/knewave/400.css"
-import GameArea from './layouts/GameArea';
+import GameArea from './components/GameArea/GameArea';
 
 
 export function App() {

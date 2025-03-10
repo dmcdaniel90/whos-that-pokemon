@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Pokemon } from '../types/types';
+import { Pokemon } from '../../../types/types';
 import { memo } from 'react';
 
 function PokemonImage(props: {
