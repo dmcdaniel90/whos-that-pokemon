@@ -3,6 +3,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: linear-gradient(220.55deg, #DD7BFF 0%, #FF6C6C 100%);
+  font-family: 'Roboto';
 }
 
 img {

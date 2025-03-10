@@ -7,10 +7,10 @@ function Heading(props: { currentPokemon: Pokemon | null, showHint: boolean }) {
 
   return (
     <Box sx={{ textAlign: 'center' }}>
-      <Typography variant="h3" sx={{ mt: 2 }}>
+      <Typography variant="h1" sx={{ mt: 2, color: 'white', mb: 2 }} fontFamily={'Knewave'}>
         Pokémon Guessing Game
       </Typography>
-      <Typography variant="subtitle1">
+      <Typography variant="h5" sx={{ color: 'white' }} fontFamily={'Roboto'}>
         {/* TODO Conditionally display the name of the current pokemon if showHint is true */}
         {showHint && currentPokemon ? `Hint: ${currentPokemon.name.charAt(0).toUpperCase() + Array.from(currentPokemon.name.slice(1)).map((char) => char = '*').join('')}` : ''}
       </Typography>
