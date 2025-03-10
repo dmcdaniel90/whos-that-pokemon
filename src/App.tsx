@@ -121,10 +121,14 @@ export function App() {
     clear();
   }, [userGuess, currentPokemon]);
 
+  const appStyles = {
+    backgroundColor: '',
+  };
+
   return (
-    <main id="main">
+    <>
       <CssBaseline />
-      <Container maxWidth="lg" >
+      <Container maxWidth="lg" sx={{ ...appStyles }}>
         <Heading currentPokemon={currentPokemon} showHint={showHint} />
         <Box
           sx={{
@@ -181,7 +185,7 @@ export function App() {
           </Box>
         </Box>
       </Container>
-    </main>
+    </>
   );
 }
 
