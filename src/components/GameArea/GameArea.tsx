@@ -33,6 +33,7 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
 
     // Default messages
     const defaultUserMessage = 'Who is that Pokemon?';
+    //! BUG - pokemonID is stale on re-renders
     const defaultSound = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemonId}.ogg`
 
     // State variables

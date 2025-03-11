@@ -2,6 +2,8 @@ import { Box } from '@mui/material';
 import { Pokemon } from '../../../types/types';
 import { memo } from 'react';
 
+//! BUG - Component has uneccesary re-renders
+
 function PokemonImage(props: {
   currentPokemon: Pokemon | null;
 }) {
