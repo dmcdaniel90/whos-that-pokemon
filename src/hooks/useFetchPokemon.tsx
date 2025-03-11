@@ -15,6 +15,7 @@ export function useFetchPokemon(pokemonId: number): Pokemon | null {
           throw new Error(`Failed to fetch pokemon: ${response.statusText}`);
         }
         const data = await response.json();
+
         setPokemon(data);
       } catch (err) {
         console.error(err);

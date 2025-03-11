@@ -7,6 +7,8 @@ function PokemonImage(props: {
 }) {
   const { currentPokemon } = props;
 
+  console.log('Image component rendered')
+
   return (
     <Box
       sx={{

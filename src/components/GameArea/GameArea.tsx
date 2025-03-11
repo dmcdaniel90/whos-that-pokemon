@@ -1,11 +1,13 @@
 import { Box, Button, Container, TextField } from "@mui/material";
 import PokemonImage from "./components/PokemonImage";
 import UserMessage from "./components/UserMessage";
-import { useState, useLayoutEffect, useCallback } from "react";
+import SoundButton from "./components/SoundButton";
+import { useState, useCallback } from "react";
 import { Generation, Pokemon } from "../../types/types";
 import { generateRandomId } from "../../utils/generateRandomID";
 import GenerationSelector from "./components/PokemonGenerationSelector";
 import { textFieldStyles, buttonStyles } from "./styles/muiStyles";
+
 
 interface IGameAreaProps {
     setShowHint: React.Dispatch<React.SetStateAction<boolean>>
@@ -31,28 +33,28 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
 
     // Default messages
     const defaultUserMessage = 'Who is that Pokemon?';
+    const defaultSound = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemonId}.ogg`
 
     // State variables
     const [userGuess, setUserGuess] = useState<string | null>(null);
     const [userMessage, setUserMessage] = useState<string>(
         defaultUserMessage
     );
+    const [pokemonCry, setPokemonCry] = useState<string>(defaultSound)
+
 
     // Timeout ID - used to clear the timeout
     let timeoutId: number | null = null;
 
-    // Initial fetch onLoad
-    useLayoutEffect(() => {
-        handleFetchNewPokemon();
-    }, [])
-
     const handleFetchNewPokemon = useCallback((): void => {
+        // console.log('fetch function called')
         const newId = generateRandomId(min, max); // Max range of pokemon to fetch starting at 1
         setPokemonId(newId); // Trigger re-fetch by changing the ID
-        console.log(`Fetching new pokemon with ID: ${newId}`);
-    }, [pokemonId, min, max])
+    }, [pokemonId, min, max, currentPokemon])
 
     const handleUpdateGeneration = useCallback((generation: Generation): void => {
+        //console.log('update generation function called')
+
         setGen(generation);
     }, [gen])
 
@@ -69,6 +71,7 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
         pokemonImageElement.style.filter = 'blur(0px)';
     }, [pokemonImageElement]);
 
+
     /**
    * Resets the user interface for a new Pokémon guess.
    * - Sets the user message to prompt a new guess.
@@ -81,8 +84,11 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
         }
         // Fetch a new Pokémon after 2 seconds
         timeoutId = setTimeout(() => {
+            //console.log('clear function called')
+
             hideImage();
             handleFetchNewPokemon();
+            setPokemonCry(currentPokemon?.cries.latest as string)
             setUserMessage(defaultUserMessage);
             setUserGuess('');
             setShowHint(false);
@@ -97,6 +103,8 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
    * Triggers a new Pokémon fetch after 2 seconds.
    */
     const checkGuess = useCallback((): void => {
+        //console.log('check guess function called')
+
         if (userGuess === currentPokemon?.name) {
             showImage();
             setUserMessage(
@@ -162,6 +170,7 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                             sx={{ ...buttonStyles }}>
                             Need a Hint?
                         </Button>
+                        <SoundButton soundFileName={pokemonCry} tooltipString={'Click to play the Pokemon cry'} />
                     </Container>
                     <GenerationSelector
                         handleUpdateGeneration={handleUpdateGeneration}

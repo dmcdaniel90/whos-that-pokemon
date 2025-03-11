@@ -19,7 +19,7 @@ export const selectInputStyles: SxProps = {
 }
 
 export const buttonStyles: SxProps = {
-    width: '50%',
+    width: '40%',
     backgroundColor: 'rgba(255, 255, 255, 0.85)',
     color: '#333',
     border: 'none',
@@ -27,5 +27,16 @@ export const buttonStyles: SxProps = {
     transition: 'background-color 0.2s ease',
     '&:hover': {
         backgroundColor: 'rgba(255, 255, 255, 1)',
+    }
+}
+
+export const volumeIconStyles: SxProps = {
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    border: 'none',
+    padding: '1rem',
+    color: 'hsl(0, 97.00%, 61.20%)',
+    '&:hover': {
+        color: 'hsla(252, 60%, 70%, 1)',
+        backgroundColor: 'rgba(255, 255, 255, 1)'
     }
 }

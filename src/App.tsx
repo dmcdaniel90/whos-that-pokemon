@@ -15,7 +15,7 @@ import GameArea from './components/GameArea/GameArea';
 export default function App() {
   // State variables and callbacks
   const [gen, setGen] = useState<Generation>('I');
-  const { min, max } = usePokemonGeneration(gen);
+  const { min, max } = usePokemonGeneration(gen)
   const initialId = generateRandomId(min, max);
   const [pokemonId, setPokemonId] = useState<number>(initialId);
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -24,6 +24,8 @@ export default function App() {
   const currentPokemon: Pokemon | null = useFetchPokemon(pokemonId);
 
   const handleShowHint = (e: React.MouseEvent): void => {
+    console.log('show hint function called')
+
     e.preventDefault();
     setShowHint(true);
   }

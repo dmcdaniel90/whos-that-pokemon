@@ -26,4 +26,9 @@ export interface Pokemon {
   name: keyof typeof PokemonList;
   types: SpeciesType[];
   sprites: Sprite;
+  id: number;
+  cries: {
+    latest: string,
+    legacy: string
+  }
 }
