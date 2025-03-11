@@ -5,7 +5,7 @@ import { useState, useLayoutEffect, useCallback } from "react";
 import { Generation, Pokemon } from "../../types/types";
 import { generateRandomId } from "../../utils/generateRandomID";
 import GenerationSelector from "./components/PokemonGenerationSelector";
-import { textFieldStyles } from "./styles/textFieldStyles";
+import { textFieldStyles, buttonStyles } from "./styles/muiStyles";
 
 interface IGameAreaProps {
     setShowHint: React.Dispatch<React.SetStateAction<boolean>>
@@ -147,17 +147,19 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                         sx={{ width: '100%', mb: 4, ...textFieldStyles }}
                         required
                     />
-                    <Container sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2 }}>
+                    <Container sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2, height: '4.5rem' }}>
                         <Button
                             variant="contained"
                             onClick={handleClick}
-                            sx={{ width: '50%' }}>
+                            sx={{
+                                ...buttonStyles
+                            }}>
                             Submit Guess
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleShowHint}
-                            sx={{ width: '50%' }}>
+                            sx={{ ...buttonStyles }}>
                             Need a Hint?
                         </Button>
                     </Container>
