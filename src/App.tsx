@@ -12,7 +12,7 @@ import "@fontsource/knewave/400.css"
 import GameArea from './components/GameArea/GameArea';
 
 
-export function App() {
+export default function App() {
   // State variables and callbacks
   const [gen, setGen] = useState<Generation>('I');
   const { min, max } = usePokemonGeneration(gen);
@@ -38,6 +38,3 @@ export function App() {
     </>
   );
 }
-
-// App.whyDidYouRender = true;
-export default App;
