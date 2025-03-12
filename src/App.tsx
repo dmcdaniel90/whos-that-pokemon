@@ -1,41 +1,61 @@
 import { useState } from 'react';
-import { useFetchPokemon } from './hooks/useFetchPokemon';
-import { generateRandomId } from './utils/generateRandomID';
+// import usePokemon from './hooks/usePokemon';
+// import { generateRandomId } from './utils/generateRandomID';
 import { Container, CssBaseline } from '@mui/material';
 import Heading from './components/Heading/Heading';
-import { Generation, Pokemon } from './types/types';
-import usePokemonGeneration from './hooks/usePokemonGeneration';
+import { Pokemon } from './types/types';
+// import usePokemonGeneration from './hooks/usePokemonGeneration';
 import './App.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/700.css';
 import "@fontsource/knewave/400.css"
+import pokeball from "./assets/pokeball.gif"
 import GameArea from './components/GameArea/GameArea';
+import { useQuery } from 'react-query';
+import { generateRandomId } from './utils/generateRandomID';
 
+// TODO Remove this as hard coded value eventually
+const { min, max } = { min: 1, max: 151 };
 
 export default function App() {
   // State variables and callbacks
-  const [gen, setGen] = useState<Generation>('I');
-  const { min, max } = usePokemonGeneration(gen)
-  const initialId = generateRandomId(min, max);
-  const [pokemonId, setPokemonId] = useState<number>(initialId);
   const [showHint, setShowHint] = useState<boolean>(false);
+  const [pokemonId, setPokemonId] = useState<number>(generateRandomId(min, max))
 
-  // This value will change when the pokemonId changes
-  const currentPokemon: Pokemon | null = useFetchPokemon(pokemonId);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['pokemon', pokemonId],
+    queryFn: async (): Promise<Pokemon> => {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await response.json()
+      console.log(data)
+      return data
+    },
+    staleTime: 1000 * 60 * 60 // 60 minutes
+  })
 
   const handleShowHint = (e: React.MouseEvent): void => {
-    console.log('show hint function called')
-
     e.preventDefault();
     setShowHint(true);
   }
+
+  const handleGetNewPokemon = (): void => {
+    const newId = generateRandomId(min, max); // Max range of pokemon to fetch starting at 1
+    setPokemonId(newId); // Trigger re-fetch by changing the ID
+  }
+
+  if (isLoading) return <p>Loading...</p>
+  if (isError) return <p>Error</p>
 
   return (
     <>
       <CssBaseline />
       <Container maxWidth="lg" >
-        <Heading currentPokemon={currentPokemon} showHint={showHint} />
-        <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} gen={gen} setGen={setGen} min={min} max={max} pokemonId={pokemonId} setPokemonId={setPokemonId} currentPokemon={currentPokemon} />
+        {data && <><Heading currentPokemon={data} showHint={showHint} />
+          <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} currentPokemon={data} handleGetNewPokemon={handleGetNewPokemon} /></>}
       </Container>
     </>
   );

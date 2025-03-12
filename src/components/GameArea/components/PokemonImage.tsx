@@ -1,16 +1,8 @@
 import { Box } from '@mui/material';
-import { Pokemon } from '../../../types/types';
-import { memo } from 'react';
+import { IPokemonImageProps } from '../../../types/types';
 
-//! BUG - Component has uneccesary re-renders
 
-function PokemonImage(props: {
-  currentPokemon: Pokemon | null;
-}) {
-  const { currentPokemon } = props;
-
-  console.log('Image component rendered')
-
+export default function PokemonImage({ image, name, isRevealed }: IPokemonImageProps) {
   return (
     <Box
       sx={{
@@ -22,11 +14,12 @@ function PokemonImage(props: {
       }}>
       <img
         id="pokemonImage"
-        src={currentPokemon?.sprites.front_default}
-        alt={currentPokemon?.name}
+        src={image?.front_default}
+        alt={name}
+        style={
+          isRevealed ? { filter: 'blur(0px)' } : { filter: 'blur(10px)' }
+        }
       />
     </Box>
   );
 }
-
-export default memo(PokemonImage);

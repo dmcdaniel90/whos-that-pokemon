@@ -3,15 +3,10 @@ import Button from "@mui/material/Button";
 import useSound from "use-sound";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { volumeIconStyles } from "../styles/muiStyles";
+import { SoundButtonProps } from "../../../types/types";
+import { memo } from "react";
 
-
-
-interface SoundButtonProps {
-    soundFileName: string;
-    tooltipString: string;
-}
-
-export default function SoundButton({ soundFileName, tooltipString }: SoundButtonProps) {
+function SoundButton({ soundFileName, tooltipString }: SoundButtonProps) {
 
     const [play] = useSound(soundFileName)
 
@@ -32,3 +27,5 @@ export default function SoundButton({ soundFileName, tooltipString }: SoundButto
         </Tooltip>
     )
 }
+
+export default memo(SoundButton)

@@ -19,9 +19,16 @@ interface SpeciesType {
   };
 }
 
-interface Sprite {
+export interface Sprite {
   front_default: string;
 }
+
+export interface IPokemonImageProps {
+  image: Sprite | undefined
+  name: string | undefined
+  isRevealed: boolean
+}
+
 export interface Pokemon {
   name: keyof typeof PokemonList;
   types: SpeciesType[];
@@ -31,4 +38,16 @@ export interface Pokemon {
     latest: string,
     legacy: string
   }
+}
+
+export interface SoundButtonProps {
+  soundFileName: string;
+  tooltipString: string;
+}
+
+export interface IGameAreaProps {
+  setShowHint: React.Dispatch<React.SetStateAction<boolean>>;
+  handleShowHint: (e: React.MouseEvent) => void;
+  handleGetNewPokemon: () => void;
+  currentPokemon: Pokemon | undefined;
 }

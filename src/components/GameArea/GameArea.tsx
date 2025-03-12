@@ -2,112 +2,73 @@ import { Box, Button, Container, TextField } from "@mui/material";
 import PokemonImage from "./components/PokemonImage";
 import UserMessage from "./components/UserMessage";
 import SoundButton from "./components/SoundButton";
-import { useState, useCallback } from "react";
-import { Generation, Pokemon } from "../../types/types";
-import { generateRandomId } from "../../utils/generateRandomID";
-import GenerationSelector from "./components/PokemonGenerationSelector";
+import { useState, useRef, useEffect } from "react";
+import { IGameAreaProps } from "../../types/types";
+// import GenerationSelector from "./components/PokemonGenerationSelector";
 import { textFieldStyles, buttonStyles } from "./styles/muiStyles";
+import { validateText } from "../../utils/validateText";
 
-
-interface IGameAreaProps {
-    setShowHint: React.Dispatch<React.SetStateAction<boolean>>
-    handleShowHint: (e: React.MouseEvent) => void
-    gen: Generation
-    setGen: React.Dispatch<React.SetStateAction<Generation>>
-    min: number
-    max: number
-    pokemonId: number
-    setPokemonId: React.Dispatch<React.SetStateAction<number>>
-    currentPokemon: Pokemon | null
-}
-
-export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min, max, pokemonId, setPokemonId, currentPokemon }: IGameAreaProps) {
-    //   Get DOM elements
-    const pokemonImageElement = document.getElementById(
-        'pokemonImage'
-    ) as HTMLImageElement
-
-    const guessInputElement = document.getElementById(
-        'guess'
-    ) as HTMLInputElement;
+export default function GameArea({ setShowHint, handleShowHint, currentPokemon, handleGetNewPokemon }: IGameAreaProps) {
 
     // Default messages
     const defaultUserMessage = 'Who is that Pokemon?';
-    //! BUG - pokemonID is stale on re-renders
-    const defaultSound = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemonId}.ogg`
+    const pokemonCry: string = currentPokemon?.cries.latest || 'none'
 
     // State variables
-    const [userGuess, setUserGuess] = useState<string | null>(null);
-    const [userMessage, setUserMessage] = useState<string>(
-        defaultUserMessage
-    );
-    const [pokemonCry, setPokemonCry] = useState<string>(defaultSound)
+    const [userMessage, setUserMessage] = useState<string>(defaultUserMessage);
+    const [isRevealed, setIsRevealed] = useState<boolean>(false)
 
+    // User Input element
+    const guessInputElement = useRef<HTMLInputElement | null>(null)
 
-    // Timeout ID - used to clear the timeout
-    let timeoutId: number | null = null;
+    // TODO - Fix Generation Selector
+    // const handleUpdateGeneration = useCallback((generation: Generation): void => {
+    //     //console.log('update generation function called')
 
-    const handleFetchNewPokemon = useCallback((): void => {
-        // console.log('fetch function called')
-        const newId = generateRandomId(min, max); // Max range of pokemon to fetch starting at 1
-        setPokemonId(newId); // Trigger re-fetch by changing the ID
-    }, [pokemonId, min, max, currentPokemon])
+    //     setGen(generation);
+    // }, [gen])
 
-    const handleUpdateGeneration = useCallback((generation: Generation): void => {
-        //console.log('update generation function called')
+    useEffect(() => {
+        guessInputElement.current?.focus()
+    }, [])
 
-        setGen(generation);
-    }, [gen])
 
     const handleClick = (e: React.MouseEvent): void => {
         e.preventDefault();
-        checkGuess();
+        const userGuess = guessInputElement.current?.value
+        const validatedAnswer = validateText(userGuess)
+
+        checkGuess(validatedAnswer);
     };
 
-    const hideImage = useCallback((): void => {
-        pokemonImageElement.style.filter = 'blur(10px)';
-    }, [pokemonImageElement]);
-
-    const showImage = useCallback((): void => {
-        pokemonImageElement.style.filter = 'blur(0px)';
-    }, [pokemonImageElement]);
-
-
-    /**
-   * Resets the user interface for a new Pokémon guess.
-   * - Sets the user message to prompt a new guess.
-   * - Clears the user's current guess input.
-   */
-
-    const clear = useCallback(async () => {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
+    const clearInput = (): void => {
+        if (guessInputElement.current) {
+            guessInputElement.current.value = ''
         }
-        // Fetch a new Pokémon after 2 seconds
-        timeoutId = setTimeout(() => {
-            //console.log('clear function called')
+    }
 
-            hideImage();
-            handleFetchNewPokemon();
-            setPokemonCry(currentPokemon?.cries.latest as string)
+    const clear = async () => {
+        // Fetch a new Pokémon after 2 seconds
+        setTimeout(() => {
+            setIsRevealed(false);
+            handleGetNewPokemon();
             setUserMessage(defaultUserMessage);
-            setUserGuess('');
             setShowHint(false);
-            guessInputElement.value = '';
+            clearInput()
+
         }, 2000) as unknown as number;
-    }, [hideImage, handleFetchNewPokemon, setUserMessage, setUserGuess, setShowHint]);
+    };
 
     /**
-   * Compares the user's guess with the name of the current Pokémon.
-   * If correct, shows the Pokémon image and congratulates the user.
-   * If incorrect, displays an error message.
-   * Triggers a new Pokémon fetch after 2 seconds.
-   */
-    const checkGuess = useCallback((): void => {
-        //console.log('check guess function called')
+    * Compares the user's guess with the name of the current Pokémon.
+    * If correct, shows the Pokémon image and congratulates the user.
+    * If incorrect, displays an error message.
+    * Triggers a new Pokémon fetch after 2 seconds.
+    */
+    const checkGuess = (guess: string): void => {
+        setIsRevealed(true)
 
-        if (userGuess === currentPokemon?.name) {
-            showImage();
+        if (guess.toLowerCase().replace(' ', '-') === currentPokemon?.name) {
             setUserMessage(
                 'Correct! The Pokémon is ' +
                 currentPokemon?.name.charAt(0).toUpperCase() +
@@ -115,11 +76,10 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                 '!'
             );
         } else {
-            showImage();
             setUserMessage('Incorrect! It was ' + currentPokemon?.name);
         }
         clear();
-    }, [userGuess, currentPokemon]);
+    };
 
     return (
         <Box
@@ -129,7 +89,7 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                 alignItems: 'top',
                 mt: 2,
             }}>
-            <PokemonImage currentPokemon={currentPokemon} />
+            <PokemonImage image={currentPokemon?.sprites} name={currentPokemon?.name} isRevealed={isRevealed} />
             <Box
                 sx={{
                     width: '50%',
@@ -150,7 +110,7 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                     <TextField
                         type="text"
                         id="guess"
-                        onChange={(e) => setUserGuess(e.target.value.toLowerCase())}
+                        inputRef={guessInputElement}
                         variant="filled"
                         label="Guess the Pokémon"
                         sx={{ width: '100%', mb: 4, ...textFieldStyles }}
@@ -173,10 +133,10 @@ export default function GameArea({ setShowHint, handleShowHint, gen, setGen, min
                         </Button>
                         <SoundButton soundFileName={pokemonCry} tooltipString={'Click to play the Pokemon cry'} />
                     </Container>
-                    <GenerationSelector
+                    {/* <GenerationSelector
                         handleUpdateGeneration={handleUpdateGeneration}
                         generation={gen}
-                    />
+                    /> */}
                 </Box>
             </Box>
         </Box>
