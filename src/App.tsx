@@ -59,7 +59,7 @@ export default function App() {
           <Hint currentPokemon={data} showHint={showHint} />
         </Box>
         {isLoading ?
-          <DotLottieReact src='src/assets/pokeball.lottie' loop autoplay />
+          <DotLottieReact src='public/pokeball.lottie' loop autoplay />
           :
           <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} currentPokemon={data} handleGetNewPokemon={handleGetNewPokemon} isLoading={isLoading} />
         }
