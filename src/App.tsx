@@ -59,7 +59,14 @@ export default function App() {
           <Hint currentPokemon={data} showHint={showHint} />
         </Box>
         {isLoading ?
-          <PokeSpinner />
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'top',
+            mt: 2,
+          }}>
+            <PokeSpinner />
+          </Box>
           :
           <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} currentPokemon={data} handleGetNewPokemon={handleGetNewPokemon} isLoading={isLoading} />
         }

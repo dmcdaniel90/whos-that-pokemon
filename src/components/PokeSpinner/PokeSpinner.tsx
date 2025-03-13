@@ -3,10 +3,11 @@ import pokeball from "./pokeball.json"
 
 export default function PokeSpinner() {
     return (
+
         <Lottie
             animationData={pokeball}
             loop={true}
-            style={{ width: "100%" }}
+            style={{ width: 200, height: 200, marginLeft: "auto", marginRight: "auto" }}
         />
     );
 }
