@@ -13,7 +13,7 @@ import GameArea from './components/GameArea/GameArea';
 import { useQuery } from 'react-query';
 import { generateRandomId } from './utils/generateRandomID';
 import Hint from './components/Heading/Hint';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import PokeSpinner from './components/PokeSpinner/PokeSpinner';
 
 // TODO Remove this as hard coded value eventually
 const { min, max } = { min: 1, max: 151 };
@@ -59,7 +59,7 @@ export default function App() {
           <Hint currentPokemon={data} showHint={showHint} />
         </Box>
         {isLoading ?
-          <DotLottieReact src='public/pokeball.lottie' loop autoplay />
+          <PokeSpinner />
           :
           <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} currentPokemon={data} handleGetNewPokemon={handleGetNewPokemon} isLoading={isLoading} />
         }
