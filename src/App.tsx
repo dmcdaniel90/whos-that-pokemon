@@ -1,7 +1,7 @@
 import { useState } from 'react';
 // import usePokemon from './hooks/usePokemon';
 // import { generateRandomId } from './utils/generateRandomID';
-import { Container, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline } from '@mui/material';
 import Heading from './components/Heading/Heading';
 import { Pokemon } from './types/types';
 // import usePokemonGeneration from './hooks/usePokemonGeneration';
@@ -9,10 +9,11 @@ import './App.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/700.css';
 import "@fontsource/knewave/400.css"
-import pokeball from "./assets/pokeball.gif"
 import GameArea from './components/GameArea/GameArea';
 import { useQuery } from 'react-query';
 import { generateRandomId } from './utils/generateRandomID';
+import Hint from './components/Heading/Hint';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 // TODO Remove this as hard coded value eventually
 const { min, max } = { min: 1, max: 151 };
@@ -31,7 +32,6 @@ export default function App() {
       }
 
       const data = await response.json()
-      console.log(data)
       return data
     },
     staleTime: 1000 * 60 * 60 // 60 minutes
@@ -47,15 +47,22 @@ export default function App() {
     setPokemonId(newId); // Trigger re-fetch by changing the ID
   }
 
-  if (isLoading) return <p>Loading...</p>
+  // TODO Add error animations
   if (isError) return <p>Error</p>
 
   return (
     <>
       <CssBaseline />
       <Container maxWidth="lg" >
-        {data && <><Heading currentPokemon={data} showHint={showHint} />
-          <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} currentPokemon={data} handleGetNewPokemon={handleGetNewPokemon} /></>}
+        <Box sx={{ textAlign: "center", position: "absolute", top: "1rem", margin: "auto" }}>
+          <Heading title='Pokemon Guessing Game' color='white' size='h1' fontName='Knewave' marginY={2} />
+          <Hint currentPokemon={data} showHint={showHint} />
+        </Box>
+        {isLoading ?
+          <DotLottieReact src='src/assets/pokeball.lottie' loop autoplay />
+          :
+          <GameArea setShowHint={setShowHint} handleShowHint={handleShowHint} currentPokemon={data} handleGetNewPokemon={handleGetNewPokemon} isLoading={isLoading} />
+        }
       </Container>
     </>
   );

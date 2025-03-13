@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.14.0",
     "@fontsource/knewave": "^5.2.5",
     "@fontsource/roboto": "^5.1.0",
+    "@lottiefiles/dotlottie-react": "^0.13.2",
     "@mui/icons-material": "^6.2.1",
     "@mui/material": "^6.2.1",
     "react": "^18.3.1",

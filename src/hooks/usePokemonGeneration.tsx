@@ -1,8 +1,6 @@
 import { Generation } from "../types/types";
 //! BUG - Hook has uneccesary re-renders
 export default function usePokemonGeneration(generation: Generation): { min: number; max: number } {
-  console.log('use generation function called')
-
   switch (generation) {
     case 'I':
       return { min: 1, max: 151 };

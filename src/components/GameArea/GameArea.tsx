@@ -1,5 +1,5 @@
 import { Box, Button, Container, TextField } from "@mui/material";
-import PokemonImage from "./components/PokemonImage";
+import Image from "./components/Image";
 import UserMessage from "./components/UserMessage";
 import SoundButton from "./components/SoundButton";
 import { useState, useRef, useEffect } from "react";
@@ -23,8 +23,7 @@ export default function GameArea({ setShowHint, handleShowHint, currentPokemon, 
 
     // TODO - Fix Generation Selector
     // const handleUpdateGeneration = useCallback((generation: Generation): void => {
-    //     //console.log('update generation function called')
-
+    //     
     //     setGen(generation);
     // }, [gen])
 
@@ -89,7 +88,8 @@ export default function GameArea({ setShowHint, handleShowHint, currentPokemon, 
                 alignItems: 'top',
                 mt: 2,
             }}>
-            <PokemonImage image={currentPokemon?.sprites} name={currentPokemon?.name} isRevealed={isRevealed} />
+
+            <Image sprite={currentPokemon?.sprites} name={currentPokemon?.name} isRevealed={isRevealed} id="pokemonImage" />
             <Box
                 sx={{
                     width: '50%',

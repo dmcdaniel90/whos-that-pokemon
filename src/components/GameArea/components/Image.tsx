@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
 import { IPokemonImageProps } from '../../../types/types';
 
-
-export default function PokemonImage({ image, name, isRevealed }: IPokemonImageProps) {
+export default function Image({ sprite, name, isRevealed, id }: IPokemonImageProps) {
   return (
     <Box
       sx={{
@@ -13,8 +12,8 @@ export default function PokemonImage({ image, name, isRevealed }: IPokemonImageP
         justifyContent: 'center',
       }}>
       <img
-        id="pokemonImage"
-        src={image?.front_default}
+        id={id}
+        src={sprite?.front_default}
         alt={name}
         style={
           isRevealed ? { filter: 'blur(0px)' } : { filter: 'blur(10px)' }

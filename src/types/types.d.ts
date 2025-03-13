@@ -24,9 +24,11 @@ export interface Sprite {
 }
 
 export interface IPokemonImageProps {
-  image: Sprite | undefined
-  name: string | undefined
-  isRevealed: boolean
+  id?: string;
+  sprite?: Sprite | undefined;
+  src?: string;
+  name: string | undefined;
+  isRevealed: boolean;
 }
 
 export interface Pokemon {
@@ -37,7 +39,7 @@ export interface Pokemon {
   cries: {
     latest: string,
     legacy: string
-  }
+  };
 }
 
 export interface SoundButtonProps {
@@ -50,4 +52,14 @@ export interface IGameAreaProps {
   handleShowHint: (e: React.MouseEvent) => void;
   handleGetNewPokemon: () => void;
   currentPokemon: Pokemon | undefined;
+  isLoading: boolean;
+}
+
+export interface IHeadingProps {
+  title: string;
+  color: string;
+  fontName?: string;
+  size: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  marginY?: number;
+  marginX?: number;
 }
