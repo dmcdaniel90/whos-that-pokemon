@@ -2,7 +2,7 @@
   "name": "pokemon_guessing_game",
   "private": true,
   "version": "0.0.0",
-  "homepage": "http://devinmcdaniel.github.io/pokemon_guessing_game",
+  "homepage": "http://dmcdaniel90.github.io/pokemon_guessing_game",
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
