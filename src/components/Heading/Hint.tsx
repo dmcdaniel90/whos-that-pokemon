@@ -7,7 +7,7 @@ function Hint(props: { currentPokemon: Pokemon | undefined, showHint: boolean })
     return (
         <Typography variant="h5" sx={{ color: 'white' }} fontFamily={'Roboto'}>
             {/* TODO Conditionally display the name of the current pokemon if showHint is true */}
-            {showHint && currentPokemon ? `Hint: ${currentPokemon.name.charAt(0).toUpperCase() + Array.from(currentPokemon.name.slice(1)).map((letter) => letter = '*').join('')}` : ''}
+            {showHint && currentPokemon ? `Hint: ${currentPokemon.name.charAt(0).toUpperCase() + Array.from(currentPokemon.name.slice(1)).map(letter => letter = '*').join('')}` : ''}
         </Typography>
     );
 }
