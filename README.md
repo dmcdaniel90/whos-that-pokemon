@@ -16,11 +16,11 @@ This is a simple pokemon guessing game built with React, TypeScript, and Materia
 
 ## Primary technologies used
 
-  - React v18
-  - Typescript
-  - Material UI
-  - Tanstack Query
-  - Pokemon API
+- React v18
+- Typescript
+- Material UI
+- Tanstack Query
+- Pokemon API
 
 ## Project objectives
 
@@ -32,10 +32,10 @@ To up the difficulty factor, I have been forcing myself to only use Typescript w
 
 ### Goals
 
- - Build a guessing game in React-Typescript
- - Implement React hooks, while avoiding uneccesary use of `useState` and `useEffect`
- - Implement an external API
- - Implement a popular design system
+- Build a guessing game in React-Typescript
+- Implement React hooks, while avoiding uneccesary use of `useState` and `useEffect`
+- Implement an external API
+- Implement a popular design system
 
 ## Future improvements
 
