@@ -16,7 +16,7 @@ export default function Image({ sprite, name, isRevealed, id }: IPokemonImagePro
         src={sprite?.front_default}
         alt={name}
         style={
-          isRevealed ? { filter: 'blur(0px)' } : { filter: 'blur(10px)' }
+          isRevealed ? { filter: 'blur(0px)' } : { filter: 'blur(20px)' }
         }
       />
     </Box>
