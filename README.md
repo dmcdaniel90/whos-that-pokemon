@@ -49,5 +49,7 @@ The current UI is very simple; I would also like to redesign the UI from the gro
 
 _update 27/03/25_ The application can now be launched using Docker. I learned the basics in a tutorial some time ago but decided to challenge myself and see if I could Dockerize an application independently.
 
+Run `docker-compose up` to run the application on port 3000
+
 
 
