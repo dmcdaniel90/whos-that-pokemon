@@ -1,0 +1,13 @@
+name: whos-that-pokemon
+
+services:
+  app:
+    image: whos-that-pokemon
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: whos-that-pokemon-app
+    environment:
+      NODE_ENV: production
+    ports:
+      - '3000:3000'
