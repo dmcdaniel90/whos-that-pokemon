@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "homepage": "https://dmcdaniel90.github.io/pokemon_guessing_game",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "vite --mode development",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
